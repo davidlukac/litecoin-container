@@ -1,0 +1,15 @@
+# https://github.com/anchore/grype#configuration
+check-for-app-update: true
+# options: negligible, low, medium, high, critical
+fail-on-severity: 'critical'
+output: "table"
+scope: "squashed"
+quiet: false
+
+db:
+  auto-update: true
+
+log:
+  file: "build/grype.log"
+  level: "error"
+  structured: false

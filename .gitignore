@@ -1,0 +1,8 @@
+# IDEs
+.idea
+
+# Build resources
+build/
+
+# Program data
+data/

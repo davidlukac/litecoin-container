@@ -1,0 +1,6 @@
+label-schema:
+  version: text
+
+trustedRegistries:
+  - docker.io
+  - 509083025952.dkr.ecr.eu-central-1.amazonaws.com
