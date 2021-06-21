@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: litecoin
+  labels:
+    app: litecoin
+spec:
+  ports:
+    - port: 9332
+      name: json-rpc-rest
+    - port: 9333
+      name: p2p
+  clusterIP: None
+  selector:
+    app: litecoin

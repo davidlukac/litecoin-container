@@ -1,0 +1,75 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: litecoin
+spec:
+  selector:
+    matchLabels:
+      app: litecoin
+  serviceName: litecoin
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: litecoin
+    spec:
+      terminationGracePeriodSeconds: 480
+      containers:
+        - name: litecoin
+          image: litecoin
+          ports:
+            - containerPort: 9332
+              name: json-rpc-rest
+            - containerPort: 9333
+              name: p2p
+          volumeMounts:
+            - name: data
+              mountPath: /home/litecoin/.litecoin
+            - name: conf
+              mountPath: /home/litecoin/.litecoin.conf
+              readOnly: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 250Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          readinessProbe:
+            exec:
+              command:
+                - pgrep
+                - litecoind
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 1
+          livenessProbe:
+            exec:
+              command:
+                - pgrep
+                - litecoind
+            initialDelaySeconds: 40
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 1
+            successThreshold: 1
+      volumes:
+        - name: conf
+          secret:
+            secretName: litecoin
+            items:
+              - key: "litecoin.conf"
+                path: "litecoin.conf"
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: host-storage
+        resources:
+          requests:
+            storage: 1Gi
