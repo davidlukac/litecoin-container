@@ -27,6 +27,8 @@ RUN sh -c 'grep security /etc/apt/sources.list | tee /etc/apt/security.sources.l
     apt-get -y upgrade -o Dir::Etc::SourceList=/etc/apt/security.sources.list && \
     apt-get -y upgrade \
       libgcrypt20 && \
+    apt-get -y install --no-install-recommends \
+      procps=2:3.3.15-2 && \
     apt-get clean && \
     apt-get autoclean && \
     apt-get autoremove --purge && \
@@ -35,6 +37,7 @@ RUN sh -c 'grep security /etc/apt/sources.list | tee /etc/apt/security.sources.l
 COPY build/litecoin/litecoin* /usr/local/bin
 
 VOLUME ["/home/litecoin/.litecoin"]
+VOLUME ["/home/litecoin/.litecoin.conf"]
 
 # Expose only mainnet ports.
 EXPOSE 9332 9333
@@ -44,4 +47,4 @@ RUN adduser --disabled-password --uid 1001 --gecos "" litecoin
 
 USER litecoin
 
-CMD ["litecoind"]
+CMD ["litecoind", "-conf=/home/litecoin/.litecoin.conf/litecoin.conf"]

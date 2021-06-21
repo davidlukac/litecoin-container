@@ -1,0 +1,20 @@
+namespace: litecoin
+
+resources:
+  - service.yaml
+  - statefulset.yaml
+
+commonLabels:
+  app: litecoin
+
+commonAnnotations:
+  provisioner: "kustomize.io"
+
+replicas:
+  - name: litecoin
+    count: 2
+
+images:
+  - name: litecoin
+    newName: 509083025952.dkr.ecr.eu-central-1.amazonaws.com/litecoin
+    newTag: 0.1.0
