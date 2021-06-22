@@ -10,6 +10,7 @@ declare DEBIAN_VER
 declare LITECOIN_VER
 declare REPO_URL
 
+# shellcheck source=.env
 source .env
 
 BINARIES_DIR="./build"
@@ -30,4 +31,4 @@ docker build \
   .
 
 # Generate BOM from the build image.
-syft "${REPO_URL}/${APP}:${APP_VER}" --scope squashed -o json > "build/${APP}.sbom.json"
+syft "${REPO_URL}/${APP}:${APP_VER}" --scope squashed -o json -q > "build/${APP}.sbom.json"

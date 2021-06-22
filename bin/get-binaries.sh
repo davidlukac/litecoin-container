@@ -6,26 +6,33 @@ set -xe
 
 declare LITECOIN_VER
 
+# shellcheck source=.env
 source .env
 
 mkdir -p build/litecoin
 mkdir -p build/glibc
 
 LITECOIN_GPG="FE3348877809386C"
+LITECOIN_FINGERPRINT="FE3348877809386C"
 LITECOIN_SRC="https://download.litecoin.org/litecoin-${LITECOIN_VER}/linux/litecoin-${LITECOIN_VER}-x86_64-linux-gnu.tar.gz"
 LITECOIN_ASC="https://download.litecoin.org/litecoin-${LITECOIN_VER}/linux/litecoin-${LITECOIN_VER}-linux-signatures.asc"
 
 curl -s -f -L -S "${LITECOIN_SRC}" -o build/litecoin.tar.gz
 curl -s -f -L -S "${LITECOIN_ASC}" -o build/litecoin.asc
 
-KEY_SERVERS=("pgp.mit.edu" "keyserver.pgp.com" "ha.pool.sks-keyservers.net" "hkp://p80.pool.sks-keyservers.net:80")
+#KEY_SERVERS=("pgp.mit.edu" "keyserver.pgp.com" "ha.pool.sks-keyservers.net" "hkp://p80.pool.sks-keyservers.net:80")
+KEY_SERVERS=()
 for KEY_SERVER in "${KEY_SERVERS[@]}"; do
-  gpg --no-tty --keyserver "${KEY_SERVER}" --recv-keys "${LITECOIN_GPG}" || true
+  gpg --keyserver "${KEY_SERVER}" --recv-keys "${LITECOIN_GPG}" || true
 done
 
+# Switching to local signature due to overloaded key servers causing timeouts.
+gpg --import resources/litecoin-pgp-pub.asc
+
 # If none of the key servers were able to provide the public signature, the validation will fail.
+gpg --fingerprint "${LITECOIN_FINGERPRINT}"
 gpg --verify build/litecoin.asc
-grep x86_64-linux build/litecoin.asc | awk '{print $1 "  build/litecoin.tar.gz"}' | shasum -a 256 --check --strict
+grep x86_64-linux build/litecoin.asc | awk '{print $1 "  build/litecoin.tar.gz"}' | shasum -a 256 --check
 
 tar --strip=2 -xzf build/litecoin.tar.gz -C build/litecoin
 

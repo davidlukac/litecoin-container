@@ -1,0 +1,73 @@
+language: generic
+
+services:
+  - docker
+
+addons:
+  apt:
+    update: true
+    packages:
+      - curl
+      - dirmngr
+      - libdigest-sha-perl
+      - screen
+
+env:
+  global:
+    # Include $HOME/.local/bin for `aws`
+    - PATH=$HOME/.local/bin:$PATH
+    - HADOLINT_VERSION=v2.5.0
+    - YQ_VERSION=v4.9.6
+    - AWS_DEFAULT_REGION=eu-central-1
+
+before_install:
+  - pyenv global 3.7.1
+  - pip install -U pip
+  - pip install awscli
+
+install:
+  - mkdir -p build
+  # Install syft
+  - sudo sh -c 'curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin'
+  - syft version
+  # Install grype
+  - sudo sh -c 'curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin'
+  - grype version
+  # Install hadolint
+  - sudo -E sh -c 'curl -sSfL -o /usr/local/bin/hadolint "https://github.com/hadolint/hadolint/releases/download/${HADOLINT_VERSION}/hadolint-$(uname -s)-$(uname -m)" && chmod 755 /usr/local/bin/hadolint'
+  - hadolint --version
+  # Install yq
+  - sudo -E sh -c 'curl -sSfL -o /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" && chmod 755 /usr/local/bin/yq'
+  - yq --version
+
+jobs:
+  include:
+    - stage: build
+      script:
+        - source .env
+        - bin/get-binaries.sh
+        - bin/docker-build.sh
+        - docker save --output build/litecoin.image.tar "${REPO_URL}/${APP}:${APP_VER}"
+      workspaces:
+        create:
+          name: artifacts
+          paths:
+            - build/litecoin.sbom.json
+            - build/litecoin.image.tar
+    - stage: test
+      script:
+        - shellcheck -x bin/*.sh
+        - bin/docker-test.sh
+      workspaces:
+        use: artifacts
+    - stage: deploy
+      # Very simple workflow - we push the built image to the registry on every successful build on master. Normally
+      # the workflow would be more sophisticated - e.g. GitFlow + release types in SemVer suffix + tag + immutable
+      # repository for releases.
+      if: branch = master
+      script:
+        - docker load --input build/litecoin.image.tar
+        - bin/docker-login.sh
+        - bin/docker-push.sh
+      workspaces:
+        use: artifacts
