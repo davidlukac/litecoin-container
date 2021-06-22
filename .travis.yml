@@ -17,6 +17,7 @@ env:
     - PATH=$HOME/.local/bin:$PATH
     - HADOLINT_VERSION=v2.5.0
     - YQ_VERSION=v4.9.6
+    - AWS_DEFAULT_REGION=eu-central-1
 
 before_install:
   - pyenv global 3.7.1
@@ -62,6 +63,9 @@ jobs:
     - stage: deploy
       script:
         - source .env
+        - aws configure set aws_access_key_id "${AWS_ACCESS_KEY_ID}"
+        - aws configure set aws_secret_access_key "${AWS_SECRET_ACCESS_KEY}"
+        - aws configure set default.region "${AWS_DEFAULT_REGION}"
         - docker load --input build/litecoin.image.tar
         - bin/docker-push.sh
       workspaces:
