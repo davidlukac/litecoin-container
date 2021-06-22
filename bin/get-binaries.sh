@@ -6,6 +6,7 @@ set -xe
 
 declare LITECOIN_VER
 
+# shellcheck source=.env
 source .env
 
 mkdir -p build/litecoin

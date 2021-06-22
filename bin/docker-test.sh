@@ -6,6 +6,7 @@ set -xe
 
 declare APP
 
+# shellcheck source=.env
 source .env
 
 hadolint Dockerfile

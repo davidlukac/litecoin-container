@@ -41,4 +41,8 @@ jobs:
         - bin/docker-build.sh
     - stage: test
       script:
+        - shellcheck -x bin/*.sh
         - bin/docker-test.sh
+    - stage: deploy
+      script:
+        - bin/docker-push.sh

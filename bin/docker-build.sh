@@ -10,6 +10,7 @@ declare DEBIAN_VER
 declare LITECOIN_VER
 declare REPO_URL
 
+# shellcheck source=.env
 source .env
 
 BINARIES_DIR="./build"
