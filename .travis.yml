@@ -64,7 +64,7 @@ jobs:
       # Very simple workflow - we push the built image to the registry on every successful build on master. Normally
       # the workflow would be more sophisticated - e.g. GitFlow + release types in SemVer suffix + tag + immutable
       # repository for releases.
-#      if: branch = master
+      if: branch = master
       script:
         - docker load --input build/litecoin.image.tar
         - bin/docker-login.sh

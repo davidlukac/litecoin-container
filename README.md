@@ -1,6 +1,27 @@
+[![Build Status](https://travis-ci.com/davidlukac/litecoin-container.svg?branch=master)](https://travis-ci.com/davidlukac/litecoin-container)
+
+
 # Litecoin Docker container
 
 Very simple Docker container running Litecoin daemon.
+
+
+## CI build and deployment
+
+The Litecoin image is built on Travis CI. The built uses very simple workflow:
+- build & test on any branches,
+- build, test and deploy to Docker registry on the `master` branch.
+
+Normally the workflow would be more sophisticated - e.g., GitFlow + release types in SemVer suffix + tag + immutable
+repository for releases, etc., but for now this is sufficient.
+
+
+### Build stages
+
+The build has three stages:
+1. build - get all necessary binaries, build the Docker image, and it's BOM,
+1. test - perform all style and formal tests, check image security,
+1. deploy - push the image to the registry.
 
 
 ## Deployment to Kubernetes cluster with Kustomize.io
