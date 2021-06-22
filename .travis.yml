@@ -10,6 +10,16 @@ addons:
       - curl
       - dirmngr
       - libdigest-sha-perl
+      -
+env:
+  global:
+    # Include $HOME/.local/bin for `aws`
+    - PATH=$HOME/.local/bin:$PATH
+
+before_install:
+  - pyenv global 3.7.1
+  - pip install -U pip
+  - pip install awscli
 
 install:
   - mkdir -p build
@@ -22,6 +32,7 @@ install:
   # Install hadolint
   - sudo sh -c 'curl -sL -o /usr/local/bin/hadolint "https://github.com/hadolint/hadolint/releases/download/v1.17.6/hadolint-$(uname -s)-$(uname -m)" && chmod 755 /usr/local/bin/hadolint'
   - hadolint --version
+
 jobs:
   include:
     - stage: build
