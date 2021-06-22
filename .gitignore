@@ -3,6 +3,7 @@
 
 # Build resources
 build/
+screenlog.*
 
 # Program data
 data/
