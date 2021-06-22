@@ -47,6 +47,7 @@ jobs:
     - stage: test
       script:
         - shellcheck -x bin/*.sh
+        - ls -al build/litecoin.sbom.json
         - bin/docker-test.sh
     - stage: deploy
       script:
