@@ -44,6 +44,7 @@ jobs:
     - stage: build
       script:
         - source .env
+        - env
         - bin/get-binaries.sh
         - bin/docker-build.sh
         - docker save --output build/litecoin.image.tar "${REPO_URL}/${APP}:${APP_VER}"
@@ -56,6 +57,7 @@ jobs:
     - stage: test
       script:
         - source .env
+        - env
         - shellcheck -x bin/*.sh
         - bin/docker-test.sh
       workspaces:
@@ -63,9 +65,11 @@ jobs:
     - stage: deploy
       script:
         - source .env
+        - env
         - aws configure set aws_access_key_id "${AWS_ACCESS_KEY_ID}"
         - aws configure set aws_secret_access_key "${AWS_SECRET_ACCESS_KEY}"
         - aws configure set default.region "${AWS_DEFAULT_REGION}"
+        - aws ecr get-login-password --region "${AWS_DEFAULT_REGION}" | docker login --username AWS --password-stdin "${REPO_URL}"
         - docker load --input build/litecoin.image.tar
         - bin/docker-push.sh
       workspaces:
