@@ -5,7 +5,8 @@ services:
 
 before_install:
   # Install syft
-  - curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+  - sudo sh -c 'curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin'
+  - syft version
 
 script:
   - bin/docker-build.sh
