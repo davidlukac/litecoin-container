@@ -44,11 +44,17 @@ jobs:
       script:
         - bin/get-binaries.sh
         - bin/docker-build.sh
+      workspaces:
+        create:
+          name: bom
+          paths:
+            - build/litecoin.sbom.json
     - stage: test
       script:
         - shellcheck -x bin/*.sh
-        - ls -al build/litecoin.sbom.json
         - bin/docker-test.sh
+      workspaces:
+        use: bom
     - stage: deploy
       script:
         - bin/docker-push.sh
