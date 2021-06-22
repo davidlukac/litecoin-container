@@ -42,19 +42,27 @@ jobs:
   include:
     - stage: build
       script:
+        - source .env
         - bin/get-binaries.sh
         - bin/docker-build.sh
+        - docker save --output build/litecoin.image.tar "${REPO_URL}/${APP}:${APP_VER}"
       workspaces:
         create:
-          name: bom
+          name: artifacts
           paths:
             - build/litecoin.sbom.json
+            - build/litecoin.image.tar
     - stage: test
       script:
+        - source .env
         - shellcheck -x bin/*.sh
         - bin/docker-test.sh
       workspaces:
-        use: bom
+        use: artifacts
     - stage: deploy
       script:
+        - source .env
+        - docker load --input build/litecoin.image.tar
         - bin/docker-push.sh
+      workspaces:
+        use: artifacts
