@@ -10,6 +10,7 @@ addons:
       - curl
       - dirmngr
       - libdigest-sha-perl
+      - screen
 
 env:
   global:
@@ -63,13 +64,18 @@ jobs:
       workspaces:
         use: artifacts
     - stage: deploy
+      # Very simple workflow - we push the built image to the registry on every successful build on master. Normally
+      # the workflow would be more sophisticated - e.g. GitFlow + release types in SemVer suffix + tag + immutable
+      # repository for releases.
+      if: branch = master
       script:
         - source .env
         - env
         - aws configure set aws_access_key_id "${AWS_ACCESS_KEY_ID}"
         - aws configure set aws_secret_access_key "${AWS_SECRET_ACCESS_KEY}"
         - aws configure set default.region "${AWS_DEFAULT_REGION}"
-        - aws ecr get-login-password --region "${AWS_DEFAULT_REGION}" | docker login --username AWS --password-stdin "${REPO_URL}"
+        # Attempt to do Docker login; we will know it failed if the next step fails.
+        - screen -dm sh -c "aws ecr get-login-password --region \"${AWS_DEFAULT_REGION}\" | docker login --username AWS --password-stdin \"${REPO_URL}\""
         - docker load --input build/litecoin.image.tar
         - bin/docker-push.sh
       workspaces:
