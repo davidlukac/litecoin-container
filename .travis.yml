@@ -3,6 +3,13 @@ language: generic
 services:
   - docker
 
+addons:
+  apt:
+    update: true
+    packages:
+      - gnupg2
+      - dirmngr
+
 before_install:
   # Install syft
   - sudo sh -c 'curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin'
