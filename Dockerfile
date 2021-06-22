@@ -35,7 +35,7 @@ RUN sh -c 'grep security /etc/apt/sources.list | tee /etc/apt/security.sources.l
     apt-get autoremove --purge && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY build/litecoin/litecoin* /usr/local/bin
+COPY build/litecoin/litecoin* /usr/local/bin/
 
 VOLUME ["/home/litecoin/.litecoin"]
 VOLUME ["/home/litecoin/.litecoin.conf"]
