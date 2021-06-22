@@ -13,6 +13,7 @@ addons:
 
 
 before_install:
+  - mkdir -p build
   # Install syft
   - sudo sh -c 'curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin'
   - syft version
