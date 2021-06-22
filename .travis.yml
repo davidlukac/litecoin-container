@@ -11,9 +11,6 @@ addons:
       - dirmngr
       - libdigest-sha-perl
 
-env:
-  - HADOLINT="${HOME}/hadolint"
-
 install:
   - mkdir -p build
   # Install syft
@@ -23,7 +20,7 @@ install:
   - sudo sh -c 'curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin'
   - grype version
   # Install hadolint
-  - curl -sL -o ${HADOLINT} "https://github.com/hadolint/hadolint/releases/download/v1.17.6/hadolint-$(uname -s)-$(uname -m)" && chmod 700 ${HADOLINT}
+  - sudo sh -c 'curl -sL -o /usr/local/bin/hadolint "https://github.com/hadolint/hadolint/releases/download/v1.17.6/hadolint-$(uname -s)-$(uname -m)" && chmod 755 /usr/local/bin/hadolint'
   - hadolint --version
 
 jobs:
