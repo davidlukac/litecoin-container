@@ -20,11 +20,11 @@ curl -s -f -L -S "${LITECOIN_ASC}" -o build/litecoin.asc
 
 KEY_SERVERS=("pgp.mit.edu" "keyserver.pgp.com" "ha.pool.sks-keyservers.net" "hkp://p80.pool.sks-keyservers.net:80")
 for KEY_SERVER in "${KEY_SERVERS[@]}"; do
-  gpg2--no-tty --keyserver "${KEY_SERVER}" --recv-keys "${LITECOIN_GPG}" || true
+  gpg2 --no-tty --keyserver "${KEY_SERVER}" --recv-keys "${LITECOIN_GPG}" || true
 done
 
 # If none of the key servers were able to provide the public signature, the validation will fail.
-gpg2--verify build/litecoin.asc
+gpg2 --verify build/litecoin.asc
 grep x86_64-linux build/litecoin.asc | awk '{print $1 "  build/litecoin.tar.gz"}' | shasum -a 256 --check --strict
 
 tar --strip=2 -xzf build/litecoin.tar.gz -C build/litecoin
