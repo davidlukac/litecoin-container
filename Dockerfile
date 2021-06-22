@@ -22,6 +22,7 @@ LABEL org.opencontainers.image.authors="davidlukac@users.noreply.github.com" \
       litecoin-version=${LITECOIN_VER}
 
 # Apply security patches.
+# hadolint ignore=DL3005
 RUN sh -c 'grep security /etc/apt/sources.list | tee /etc/apt/security.sources.list' && \
     apt-get -y update && \
     apt-get -y upgrade -o Dir::Etc::SourceList=/etc/apt/security.sources.list && \
