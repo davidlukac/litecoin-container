@@ -4,4 +4,6 @@ services:
   - docker
 
 script:
+  # Install syft
+  - curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
   - bin/docker-build.sh
