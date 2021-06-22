@@ -22,12 +22,12 @@ install:
   # Install hadolint
   - sudo sh -c 'curl -sL -o /usr/local/bin/hadolint "https://github.com/hadolint/hadolint/releases/download/v1.17.6/hadolint-$(uname -s)-$(uname -m)" && chmod 755 /usr/local/bin/hadolint'
   - hadolint --version
-
 jobs:
   include:
     - stage: build
       script:
+        - bin/get-binaries.sh
         - bin/docker-build.sh
-    - stage:
+    - stage: test
       script:
         - bin/docker-test.sh
