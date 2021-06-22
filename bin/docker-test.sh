@@ -11,4 +11,4 @@ source .env
 hadolint Dockerfile
 hadolint alpine.dockerfile
 
-grype "sbom:./build/${APP}.sbom.json"
+grype -q "sbom:./build/${APP}.sbom.json"
