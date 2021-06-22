@@ -7,13 +7,24 @@ addons:
   apt:
     update: true
     packages:
-      - gnupg2
+      - curl
       - dirmngr
+      - libdigest-sha-perl
+
 
 before_install:
   # Install syft
   - sudo sh -c 'curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin'
   - syft version
+  # Install grype
+  - sudo sh -c 'curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin'
+  - grype version
 
-script:
-  - bin/docker-build.sh
+jobs:
+  include:
+    - stage: build
+      script:
+        - bin/docker-build.sh
+    - stage:
+      script:
+        - bin/docker-test.sh
