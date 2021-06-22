@@ -10,7 +10,7 @@ addons:
       - curl
       - dirmngr
       - libdigest-sha-perl
-      -
+
 env:
   global:
     # Include $HOME/.local/bin for `aws`
