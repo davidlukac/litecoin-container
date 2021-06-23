@@ -53,3 +53,48 @@ kubectl logs litecoin-0 -n litecoin -f
 
 The repository container also alternative `alpine.dockerfile` based on the latest Alpine image and `glibc`, which is
 smaller and more contained, but has its downfalls in sense of CVE vulnerabilities.
+
+
+## Litecoin trading processing scripts
+
+
+### Shell
+
+The repository contains a simple script calculating hourly average trading prices for given currency pair. The script 
+takes a path to the input CSV file and target date in YYYY-MM-DD format as arguments.
+
+Example usage:
+```shell
+bin/trading-avg.sh resources/gemini_LTCUSD_1hr.csv 2021-06-22
+at 23h 00m 00s the average price of LTCUSD was 119.215 with volume of 1981.5865455
+at 22h 00m 00s the average price of LTCUSD was 120.56 with volume of 1067.2457715
+at 21h 00m 00s the average price of LTCUSD was 120.82 with volume of 2029.6974064
+at 20h 00m 00s the average price of LTCUSD was 121.245 with volume of 2424.3213983
+...
+```
+
+
+### Python
+
+Python implementation of the same script. 
+
+Example usage:
+```shell
+poetry run python bin/trading_avg.py resources/gemini_LTCUSD_1hr.csv 2021-06-22
+at 23h 00m 00s the average price of LTCUSD was 119.215 with volume of 1981.5865455
+at 22h 00m 00s the average price of LTCUSD was 120.560 with volume of 1067.2457715
+at 21h 00m 00s the average price of LTCUSD was 120.820 with volume of 2029.6974064
+at 20h 00m 00s the average price of LTCUSD was 121.245 with volume of 2424.3213983
+...
+```
+
+Formal test:
+```shell
+pylint bin/trading_avg.py
+--------------------------------------------------------------------
+Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)
+```
+
+#### Prerequisites
+
+- Python 3.6+
