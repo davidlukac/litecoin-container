@@ -47,3 +47,9 @@ kubectl describe statefulset litecoin -n litecoin
 # Watch pod logs:
 kubectl logs litecoin-0 -n litecoin -f
 ```
+
+
+## Alternative Alpine image
+
+The repository container also alternative `alpine.dockerfile` based on the latest Alpine image and `glibc`, which is
+smaller and more contained, but has its downfalls in sense of CVE vulnerabilities.
